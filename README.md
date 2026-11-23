@@ -38,10 +38,7 @@ A high school student in Tokyo. I build websites and Discord bots, and run my ow
   <img alt="Languages across my public repositories" src="assets/languages-light.svg" width="100%">
 </picture>
 
-### Stack
-
-<!-- commas in srcset separate image candidates, so they are written as %2C -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=ts%2Creact%2Cnextjs%2Ctailwind%2Cpython%2Cjava%2Cgo%2Clinux%2Cdocker%2Ccloudflare&theme=dark&perline=10">
-  <img alt="TypeScript, React, Next.js, Tailwind CSS, Python, Java, Go, Linux, Docker, Cloudflare" src="https://skillicons.dev/icons?i=ts%2Creact%2Cnextjs%2Ctailwind%2Cpython%2Cjava%2Cgo%2Clinux%2Cdocker%2Ccloudflare&theme=light&perline=10" height="40">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg">
+  <img alt="Stack — Languages: TypeScript, JavaScript, Python, Java, Bash, SQL. Web: React, Next.js, Tailwind CSS, Node.js, Astro, Three.js. Data: Appwrite, Supabase, PostgreSQL, MongoDB, Redis, SQLite. Infra: Linux, Docker, Dokploy, Cloudflare, Tailscale, WireGuard, BIRD, chrony." src="assets/stack-light.svg" width="100%">
 </picture>
