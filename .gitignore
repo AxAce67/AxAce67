@@ -1,0 +1,3 @@
+# copied from ~/portfolio/node_modules/@fontsource-variable/{geist,geist-mono}/files when rebuilding the banner
+tools/*.woff2
+.DS_Store
