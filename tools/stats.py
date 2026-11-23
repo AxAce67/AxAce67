@@ -113,7 +113,7 @@ def activity(user: dict, t: dict) -> str:
         label = dt.date.fromisoformat(days[i]["date"]).strftime("%b %-d")
         ticks.append(f'<text x="{x:.1f}" y="{y_base + 20}" text-anchor="middle" font-family="{MONO}" font-size="12" fill="{t["muted"]}">{label}</text>')
     axis = "".join(ticks)
-    right = f"{streak}-day streak · {cal['totalContributions']:,} this year"
+    right = f"{streak}-day streak · {cal['totalContributions']:,} in the past year"
     return card(t, 250, "ACTIVITY", right, stats + "".join(grid) + "".join(bars) + axis)
 
 
