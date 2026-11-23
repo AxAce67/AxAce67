@@ -66,6 +66,11 @@ def fetch() -> dict:
     # the workflow's built-in token is a bot, so fall back to the public list
     if viewer.get("login") == USER:
         user["repositories"] = viewer["repositories"]
+    # counts only (no names) so the Actions log shows what the token can see
+    repos = user["repositories"]["nodes"]
+    print(f"token viewer: {viewer.get('login') or '(none)'}; repositories: {len(repos)}, private: {sum(r['isPrivate'] for r in repos)}")
+    if body.get("errors"):
+        print("api notes:", [e.get("message", "")[:120] for e in body["errors"]])
     return user
 
 
