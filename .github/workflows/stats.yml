@@ -1,5 +1,5 @@
 # Rebuilds the activity and language cards (tools/stats.py) once a day and
-# commits them when they changed. Uses only the built-in GITHUB_TOKEN.
+# commits them when they changed.
 name: stats
 
 on:
@@ -21,7 +21,10 @@ jobs:
       - name: Build cards
         run: python3 tools/stats.py
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # STATS_TOKEN: a fine-grained token with read-only Metadata on all my
+          # repositories, so private ones count in the language card. Without it
+          # the built-in token only sees public repositories.
+          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Commit if changed
         run: |
           git add assets

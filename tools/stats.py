@@ -1,7 +1,8 @@
 """Builds the README stats cards from the GitHub API (no third-party service):
 
     assets/activity-{dark,light}.svg   contributions per day, last 30 days
-    assets/languages-{dark,light}.svg  languages across my public repositories
+    assets/languages-{dark,light}.svg  languages across my repositories (private ones
+                                       too when STATS_TOKEN can read them)
 
 Run by .github/workflows/stats.yml once a day. Locally:
 
@@ -34,8 +35,8 @@ query($login: String!) {
     contributionsCollection {
       contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } }
     }
-    repositories(first: 100, ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC) {
-      nodes { languages(first: 20, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } } }
+    repositories(first: 100, ownerAffiliations: OWNER, isFork: false) {
+      nodes { isPrivate languages(first: 20, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } } }
     }
   }
 }
@@ -125,6 +126,9 @@ def languages(user: dict, t: dict) -> str:
             if name in SKIP_LANGUAGES:
                 continue
             sizes.setdefault(name, [0, e["node"]["color"] or "#8b949e"])[0] += e["size"]
+    # with STATS_TOKEN (read-only, set in the workflow) private repositories count
+    # too; only the language totals are shown, never repository names
+    scope = "all repositories" if any(r["isPrivate"] for r in user["repositories"]["nodes"]) else "public repositories"
     ranked = sorted(sizes.items(), key=lambda kv: -kv[1][0])
     total = sum(v[0] for _, v in ranked) or 1
     top, rest = ranked[:6], sum(v[0] for _, v in ranked[6:])
@@ -151,7 +155,7 @@ def languages(user: dict, t: dict) -> str:
     rows = (len(parts) + 3) // 4
     height = 108 + rows * 28 + 8
     inner = f"<defs>{clip}</defs><g clip-path=\"url(#r)\">{''.join(segs)}</g>{''.join(legend)}"
-    return card(t, height, "LANGUAGES", "public repositories", inner)
+    return card(t, height, "LANGUAGES", scope, inner)
 
 
 def main() -> None:
