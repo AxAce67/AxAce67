@@ -35,10 +35,13 @@ query($login: String!) {
     contributionsCollection {
       contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } }
     }
-    repositories(first: 100, ownerAffiliations: OWNER, isFork: false) {
-      nodes { isPrivate languages(first: 20, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } } }
-    }
+    repositories(first: 100, ownerAffiliations: OWNER, isFork: false) { ...langs }
   }
+  # a fine-grained token lists private repositories only through viewer
+  viewer { login repositories(first: 100, ownerAffiliations: OWNER, isFork: false) { ...langs } }
+}
+fragment langs on RepositoryConnection {
+  nodes { isPrivate languages(first: 20, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } } }
 }
 """
 
@@ -54,9 +57,16 @@ def fetch() -> dict:
     )
     with urllib.request.urlopen(req, timeout=30) as r:
         body = json.load(r)
-    if "errors" in body:
-        raise SystemExit(body["errors"])
-    return body["data"]["user"]
+    data = body.get("data") or {}
+    if not data.get("user"):
+        raise SystemExit(body.get("errors"))
+    user = data["user"]
+    viewer = data.get("viewer") or {}  # a bot token may not be allowed to read viewer
+    # STATS_TOKEN belongs to me, so its viewer also sees my private repositories;
+    # the workflow's built-in token is a bot, so fall back to the public list
+    if viewer.get("login") == USER:
+        user["repositories"] = viewer["repositories"]
+    return user
 
 
 def card(t: dict, height: int, title: str, right: str, inner: str) -> str:
