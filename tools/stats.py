@@ -80,9 +80,16 @@ def activity(user: dict, t: dict) -> str:
             break
         streak += 1
     peak = max(counts) or 1
-    x0, y_base, h_max = 28, 196, 112
+    x0, y_base, h_max = 28, 214, 112
     gap = 4
     bw = (W - 2 * x0 - gap * (len(counts) - 1)) / len(counts)
+    # faint guide lines at the peak and half of it, labelled on the right
+    grid = []
+    for frac in (1, 0.5):
+        gy = y_base - h_max * frac
+        grid.append(
+            f'<line x1="{x0}" y1="{gy:.1f}" x2="{W - x0}" y2="{gy:.1f}" stroke="{t["bar0"]}" stroke-dasharray="2 4"/>'
+        )
     bars = []
     for i, c in enumerate(counts):
         h = max(3, c / peak * h_max) if c else 3
@@ -91,18 +98,23 @@ def activity(user: dict, t: dict) -> str:
             f'<rect x="{x:.1f}" y="{y_base - h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2" fill="{t["bar"] if c else t["bar0"]}">'
             f'<title>{days[i]["date"]}: {c}</title></rect>'
         )
-    first = dt.date.fromisoformat(days[0]["date"]).strftime("%b %-d")
-    last = dt.date.fromisoformat(days[-1]["date"]).strftime("%b %-d")
+        if c:  # the count above each bar: hover titles do not work in a README image
+            bars.append(
+                f'<text x="{x + bw / 2:.1f}" y="{y_base - h - 5:.1f}" text-anchor="middle" font-family="{MONO}" font-size="10.5" fill="{t["muted"]}">{c}</text>'
+            )
     stats = (
         f'<text x="28" y="76" font-family="{SANS}" font-size="26" font-weight="600" fill="{t["ink"]}">{total30:,}'
         f'<tspan font-size="14" font-weight="400" fill="{t["muted"]}" dx="8">contributions in 30 days</tspan></text>'
     )
-    axis = (
-        f'<text x="{x0}" y="{y_base + 20}" font-family="{MONO}" font-size="12" fill="{t["muted"]}">{first}</text>'
-        f'<text x="{W - x0}" y="{y_base + 20}" text-anchor="end" font-family="{MONO}" font-size="12" fill="{t["muted"]}">{last}</text>'
-    )
+    # a date under every 7th bar, counted back from today
+    ticks = []
+    for i in range(len(days) - 1, -1, -7):
+        x = x0 + i * (bw + gap) + bw / 2
+        label = dt.date.fromisoformat(days[i]["date"]).strftime("%b %-d")
+        ticks.append(f'<text x="{x:.1f}" y="{y_base + 20}" text-anchor="middle" font-family="{MONO}" font-size="12" fill="{t["muted"]}">{label}</text>')
+    axis = "".join(ticks)
     right = f"{streak}-day streak · {cal['totalContributions']:,} this year"
-    return card(t, 232, "ACTIVITY", right, stats + "".join(bars) + axis)
+    return card(t, 250, "ACTIVITY", right, stats + "".join(grid) + "".join(bars) + axis)
 
 
 def languages(user: dict, t: dict) -> str:
