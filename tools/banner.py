@@ -77,20 +77,14 @@ html, body {{ margin: 0; background: transparent; }}
       font-family: Geist, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; color: {t["ink"]}; }}
 .map {{ position: absolute; right: 70px; top: 40px; }}
 .map .lbl {{ font: 500 15px GeistMono, monospace; fill: {t["muted"]}; letter-spacing: .02em; }}
-.text {{ position: absolute; left: 56px; top: 78px; }}
-.eyebrow {{ font: 500 16px GeistMono, monospace; letter-spacing: .14em; text-transform: uppercase; color: {t["muted"]}; }}
-.name {{ font-size: 108px; font-weight: 700; letter-spacing: -.045em; line-height: 1; margin: 14px 0 18px; }}
+.text {{ position: absolute; left: 56px; top: 118px; }}
+.name {{ font-size: 108px; font-weight: 700; letter-spacing: -.045em; line-height: 1; margin: 0 0 22px; }}
 .tag {{ font-size: 27px; font-weight: 500; letter-spacing: .02em; }}
-.meta {{ margin-top: 30px; display: flex; gap: 12px; font: 500 16px GeistMono, monospace; color: {t["muted"]}; }}
-.chip {{ border: 1px solid {t["faint"]}; border-radius: 999px; padding: 8px 16px; }}
-.dot {{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: {t["pin"]}; margin-right: 7px; vertical-align: 1px; }}
 </style></head><body><div class="b">
   <div class="map">{map_svg(t)}</div>
   <div class="text">
-    <div class="eyebrow">aki.sh · Tokyo, Japan</div>
     <div class="name">Aki</div>
     <div class="tag">好きなものを作る。それだけ。</div>
-    <div class="meta"><span class="chip"><span class="dot"></span>8 servers</span><span class="chip">AS4242421798</span><span class="chip">Web · Bots · Infra</span></div>
   </div>
 </div></body></html>"""
 
